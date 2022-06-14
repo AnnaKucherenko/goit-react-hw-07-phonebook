@@ -1,18 +1,10 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import {contactDelete} from '../../Redax/contacts';
+import { useSelector } from 'react-redux';
 import styles from './ContactList.module.css';
 
-function ContactList({contacts}) {
-    // const contacts = useSelector((state) => state.contacts.contacts.items);
+function ContactList({contacts, onDelete}) {
     const filter = useSelector((state) => state.contacts.contacts.filter);
-    const dispatch = useDispatch();
-
-    const deleteContact = contactId => {
-        dispatch(contactDelete(contactId));
-        
-    };
-
+    
     const normalizedFilter = filter.toLowerCase();
     const visibleContact = contacts.filter(contact =>
         contact.name.toLowerCase().includes(normalizedFilter)
@@ -22,10 +14,10 @@ function ContactList({contacts}) {
             <ul>
                 {visibleContact.map(contact => (
                     <li key={contact.id}>
-                        {contact.name}:  {contact.number}
+                        {contact.name}:  {contact.phone}
                         <button
                             type="button"
-                            onClick={() => deleteContact(contact.id)}
+                            onClick={() => onDelete(contact.id)}
                             className={styles.buttonDelete}
                             >
                             Delete

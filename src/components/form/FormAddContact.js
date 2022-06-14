@@ -1,35 +1,13 @@
 import React from 'react';
 import { useState } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { contactAdd} from '../../Redax/contacts';
-import { nanoid } from 'nanoid';
+import { useAddContactMutation } from 'Redax/contactsSlice';
 import styles from './FormAddContact.module.css';
-
-
 
 export default function FormAddContact ({contacts}){
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
-    
-    // const contacts = useSelector((state) => state.contacts.contacts.items);
-    const dispatch = useDispatch();
-
-    const addContact = () => {
-        const contact = {
-          id: nanoid(),
-          name: name,
-          number: number,
-        }
-        const contactsArrey = contacts;
-        const isFindContact = contactsArrey.find(contact=>contact.name===name);
-        if (isFindContact) {
-          alert(`${name} is already in contacts`);
-        } else {
-          dispatch(contactAdd(contact));
-        }
-        
-    }
-
+    const [addContact] = useAddContactMutation();
+   
     const handleChange = (event) => {
         const { name, value } = event.currentTarget;
         if(name==='name'){
@@ -42,7 +20,16 @@ export default function FormAddContact ({contacts}){
 
     const handleSubmit = (e)=>{
         e.preventDefault();
-        addContact();
+        const contactName = e.currentTarget.elements.name.value;
+        const contactPhone = e.currentTarget.elements.number.value;
+        const contactData = {contactName,contactPhone};
+        const isFindContact = contacts.find(contact=>contact.name===name);
+        if (isFindContact) {
+            alert(`${name} is already in contacts`);
+        } else {
+            addContact(contactData);
+        }
+        
         reset();
     }
 
